@@ -3,19 +3,17 @@ class Solution:
         left = 0
         right = len(nums) - 1
         
-        if len(nums) == 1:
-            return nums[0]
+        result = nums[left]
 
         while left <= right:
-            if left > 0 and nums[left - 1] > nums[left]:
-                return nums[left]
-            if right < len(nums) - 1 and nums[right + 1] < nums[right]:
-                print('this case')
-                return nums[right + 1]
             if nums[left] < nums[right]:
-                return nums[left]
+                return min(result, nums[left])
 
-            left += 1
-            right -= 1
+            middle = (right + left) // 2
+            result = min(result, nums[middle])
+            if nums[middle] >= nums[left]:
+                left = middle + 1
+            else:
+                right = middle - 1
 
-        return nums[left]
+        return result
