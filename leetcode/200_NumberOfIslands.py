@@ -1,40 +1,38 @@
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        return self.countIslands(grid, 0, 0, set(), set())
-
-    def countIslands(self, grid: List[List[str]], row: int, column: int, visited: set[tuple[int, int]], counted: set[tuple[int, int]]) -> int:
-        ROWS = len(grid)
-        COLUMNS = len(grid[0])
-
-        if min(row, column) < 0 or row >= ROWS or column >= COLUMNS or (row, column) in visited:
-            return 0
-
+        visited = set()
         count = 0
-        visited.add((row, column))
 
-        if grid[row][column] == '1':
-            if not self.islandAlreadyCounted(row, column, counted):
-                print(f'added to count ({row}, {column})')
-                count += 1
+        for row in range(len(grid)):
+            for column in range(len(grid[0])):
+                node = (row, column)
+                if (node not in visited and
+                    grid[row][column] == "1"):
+                    self.mapIsland(row, column, grid, visited)
 
-            counted.add((row, column))
-            print(counted)
+                    count += 1
 
-        count += self.countIslands(grid, row + 1, column, visited, counted)
-        count += self.countIslands(grid, row - 1, column, visited, counted)
-        count += self.countIslands(grid, row, column + 1, visited, counted)
-        count += self.countIslands(grid, row, column - 1, visited, counted)
+                visited.add(node)
 
         return count
 
-    def islandAlreadyCounted(self, row: int, column: int, island: set[tuple[int, int]]) -> bool:
-        if (row + 1, column) in island:
-            return True
-        if (row - 1, column) in island:
-            return True
-        if (row, column + 1) in island:
-            return True
-        if (row, column - 1) in island:
-            return True
-        
-        return False
+
+    def mapIsland(self, row: int, column: int, grid: List[List[str]], visited: set[(int, int)]):
+        next_nodes = deque()
+        next_nodes.append((row, column))
+
+        while len(next_nodes) > 0:
+            current_row, current_column = next_nodes.popleft()
+            next_directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+
+            for direction in next_directions:
+                new_row = current_row + direction[0]
+                new_column = current_column + direction[1]
+                new_node = (new_row, new_column)
+
+                if (new_row in range(len(grid)) and
+                    new_column in range(len(grid[0])) and
+                    new_node not in visited and
+                    grid[new_row][new_column] == "1"):
+                    visited.add(new_node)
+                    next_nodes.append(new_node)
