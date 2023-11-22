@@ -21,15 +21,16 @@ class Solution:
         next_nodes.append(node)
 
         while next_nodes:
-            original_node = next_nodes.popleft()
-            cloned_node = cloned_nodes[original_node.val]
+            for _ in range(len(next_nodes)):
+                original_node = next_nodes.popleft()
+                cloned_node = cloned_nodes[original_node.val]
 
-            for neighbor in original_node.neighbors:
-                if neighbor.val not in cloned_nodes:
-                    cloned_nodes[neighbor.val] = Node(val=neighbor.val)
-                    next_nodes.append(neighbor)
+                for neighbor in original_node.neighbors:
+                    if neighbor.val not in cloned_nodes:
+                        cloned_nodes[neighbor.val] = Node(val=neighbor.val)
+                        next_nodes.append(neighbor)
 
-                cloned_neighbor = cloned_nodes[neighbor.val]
-                cloned_node.neighbors.append(cloned_neighbor)
+                    cloned_neighbor = cloned_nodes[neighbor.val]
+                    cloned_node.neighbors.append(cloned_neighbor)
 
         return cloned_first_node
