@@ -1,24 +1,21 @@
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        if len(nums) == 0:
-            return 0
-        if len(nums) == 1:
-            return nums[0]
-        if len(nums) == 2:
-            return max(nums[0], nums[1])
+        nonAdjancentMax = 0
+        adjancentMax = 0
 
-        option1 = nums[0] + self.rob(nums[2:])
-        option2 = nums[1] + self.rob(nums[3:])
-        return max(option1, option2)
-        
+        for n in nums:
+            temp = adjancentMax
+            adjancentMax = max(nonAdjancentMax + n, adjancentMax)
+            nonAdjancentMax = temp
+
+        return adjancentMax
 
 '''
-[1,10,30,10,1]
-max(1 + rob(30, 10, 1), 10 + rob(10, 1)) -> max(1 + 31, 10 + 10) -> max(32, 20) -> 32
-
-[30, 10, 1]
-max(30 + rob(1), 10 + rob()) -> max(30 + 1, 10) -> max(31, 10) -> 31
-
-[10, 1]
-max(rob(10), rob(1)) -> max(10, 1) -> 10
+[2, 4, 8, 9, 9, 3]
+[2, ], max(rob1+2, rob2) rob1 = 0, rob2 = 0
+[2, 4, ], max(rob1+4, rob2) rob1 = 0, rob2 = 2
+[2, 4, 8, ], max(rob1+8, rob2) rob1 = 2, rob2 = 4
+[2, 4, 8, 13, ], max(rob1+9, rob2) rob1 = 4, rob2 = 10
+[2, 4, 8, 13, 19, ], max(rob1+9, rob2) rob1 = 10, rob2 = 13
+[2, 4, 8, 13, 19, 19], max(rob1+3, rob2) rob1 = 13, rob2 = 19
 '''
