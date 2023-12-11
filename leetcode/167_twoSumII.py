@@ -1,21 +1,17 @@
 class Solution:
     def twoSum(self, numbers: List[int], target: int) -> List[int]:
-        validated_nums = set()
+        left = 0
+        right = len(numbers) - 1
 
-        for index, num in enumerate(numbers[:-1]):
-            if num in validated_nums:
-                continue
+        while left < right:
+            current_sum = numbers[left] + numbers[right]
 
-            complement_index = index + 1
-            current_sum = num + numbers[complement_index]
+            if current_sum == target:
+                return [left + 1, right + 1]
 
-            while current_sum <= target and complement_index < len(numbers):
-                current_sum = num + numbers[complement_index]
-                if current_sum == target:
-                   return [index + 1, complement_index + 1]
-
-                complement_index += 1
-
-            validated_nums.add(num)
+            if current_sum < target:
+                left += 1
+            else:
+                right -= 1
 
         return [-1, -1]
