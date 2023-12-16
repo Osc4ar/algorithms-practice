@@ -1,16 +1,14 @@
 class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
-        cache = [[0] * n for _ in range(m)]
-        return self.recursive(cache, 0, 0, m, n)
+        previous_row = [1] * n
 
-    def recursive(self, cache: list[list[int]], current_row: int, current_column: int, rows: int, cols: int):
-        if current_row == rows or current_column == cols:
-            return 0
-        if cache[current_row][current_column] > 0:
-            return cache[current_row][current_column]
-        if current_row == rows - 1 and current_column == cols - 1:
-            return 1
+        for row in range(m - 2, -1, -1):
+            current_row = [0] * n
+            current_row[n - 1] = 1
 
-        cache[current_row][current_column] = self.recursive(cache, current_row + 1, current_column, rows, cols) + self.recursive(cache, current_row, current_column + 1, rows, cols)
+            for col in range(n - 2, -1, -1):
+                current_row[col] = current_row[col + 1] + previous_row[col]
 
-        return cache[current_row][current_column]
+            previous_row = current_row
+
+        return previous_row[0]
