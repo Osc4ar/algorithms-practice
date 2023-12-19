@@ -3,22 +3,19 @@ class Solution:
         rows = len(obstacleGrid)
         columns = len(obstacleGrid[0])
 
-        cache = [[0] * columns for _ in range(rows)]
-        return self.recursive(obstacleGrid, 0, 0, cache)
+        previous_row = [0] * columns
+        previous_row[columns - 1] = 1
+        for row in reversed(range(rows)):
+            current_row = [0] * columns
+            
+            for column in reversed(range(columns)):
+                if obstacleGrid[row][column] == 1:
+                    current_row[column] = 0
+                elif column + 1 < columns:
+                    current_row[column] = current_row[column + 1] + previous_row[column]
+                else:
+                    current_row[column] = previous_row[column]
 
-    def recursive(self, obstacleGrid: List[List[int]], row: int, column: int, cache: List[List[int]]) -> int:
-        rows = len(obstacleGrid)
-        columns = len(obstacleGrid[0])
+            previous_row = current_row
 
-        if row == rows or column == columns:
-            return 0
-        if obstacleGrid[row][column] == 1:
-            return 0
-        if row == rows - 1 and column == columns - 1 and obstacleGrid[row][column] != 1:
-            return 1
-
-        if cache[row][column] > 0:
-            return cache[row][column]
-
-        cache[row][column] = self.recursive(obstacleGrid, row + 1, column, cache) + self.recursive(obstacleGrid, row, column + 1, cache)
-        return cache[row][column]
+        return previous_row[0]
