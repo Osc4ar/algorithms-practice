@@ -13,12 +13,14 @@ class Solution:
     def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
         cars = [(p, s) for p, s in zip(position, speed)]
         sorted_cars = sorted(cars)[::-1]
-        stack = []
+        count = 0
+        last_speed = None
 
         for p, s in sorted_cars:
-            time_needed = (target - p) / s
+            current_speed = (target - p) / s
 
-            if len(stack) == 0 or time_needed > stack[-1]:
-                stack.append(time_needed)
+            if last_speed is None or current_speed > last_speed:
+                count += 1
+                last_speed = current_speed
 
-        return len(stack)
+        return count
