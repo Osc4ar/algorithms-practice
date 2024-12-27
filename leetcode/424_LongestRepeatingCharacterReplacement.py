@@ -3,33 +3,34 @@ class Solution:
         if len(s) == 1:
             return 1
 
+        result = 1
+        frequencies = {}
         left = 0
-        right = 0
-        max_size = 1
-        frequencies = {s[right]: 1}
-
-        while right < len(s):
-            size = right - left + 1
-            max_frequency = self.getMaxFrequency(frequencies)
-            if size - max_frequency <= k:
-                max_size = max(max_size, size)
-                right += 1
-                if right < len(s):
-                    self.increaseFrequency(frequencies, s[right])
+        for right in range(len(s)):
+            if s[right] not in frequencies:
+                frequencies[s[right]] = 1
             else:
-                frequencies[s[left]] -= 1
-                left += 1
+                frequencies[s[right]] += 1
 
-        return max_size
+            max_frequency = self.getMaxFrequency(frequencies)
+            window_size = right - left + 1
+            is_valid_str = window_size - max_frequency <= k
 
-    def increaseFrequency(self, frequencies: dict[str, int], key: str):
-        if key not in frequencies:
-            frequencies[key] = 1
-        else:
-            frequencies[key] += 1
+            if is_valid_str:
+                result = max(result, window_size)
+            else:
+                while not is_valid_str:
+                    frequencies[s[left]] -= 1
+                    left += 1
+                    window_size = right - left + 1
+                    is_valid_str = window_size - max_frequency <= k
+            
+        return result
 
-    def getMaxFrequency(self, frequencies: dict[str, int]) -> int:
-        max_f = 0
-        for key, frequency in frequencies.items():
-            max_f = max(max_f, frequency)
-        return max_f
+    def getMaxFrequency(self, frequencies: [str, int]) -> int:
+        max_frequency = 0
+
+        for frequency in frequencies.values():
+            max_frequency = max(max_frequency, frequency)
+
+        return max_frequency
