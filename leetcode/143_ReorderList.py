@@ -5,25 +5,32 @@
 #         self.next = next
 class Solution:
     def reorderList(self, head: Optional[ListNode]) -> None:
-        """
-        Do not return anything, modify head in-place instead.
-        """
-        current = head
-        nodes = []
+        # Find the second half of the list
+        fast = head.next
+        slow = head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        # Reverse second half
+        current = slow.next
+        slow.next = None
+        new_next = None
         while current:
-            nodes.append(current)
-            current = current.next
+            tmp = current.next
+            current.next = new_next
+            new_next = current
+            current = tmp
+        
+        # merge the lists
+        current1 = head
+        current2 = new_next
+        while current2:
+            tmp1 = current1.next
+            tmp2 = current2.next
 
-        i = 0
-        j = len(nodes) - 1
-        while i < j:
-            nodes[i].next = nodes[j]
+            current1.next = current2
+            current2.next = tmp1
 
-            i += 1
-            if i >= j:
-                break
-
-            nodes[j].next = nodes[i]
-            j -= 1
-
-        nodes[i].next = None
+            current2 = tmp2
+            current1 = tmp1
