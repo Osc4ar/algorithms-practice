@@ -15,15 +15,18 @@ class Solution:
         if root is None:
             return 0
 
-        currentDepth = self.depthOfTree(root.left) + self.depthOfTree(root.right)
-        diameterOfLeft = self.diameterOfBinaryTree(root.left)
-        diameterOfRight = self.diameterOfBinaryTree(root.right)
-        return max(currentDepth, diameterOfLeft, diameterOfRight)
-
-
-    def depthOfTree(self, root: Optional[TreeNode]) -> int:
-        if root is None:
-            return 0
-
-        return 1 + max(self.depthOfTree(root.left), self.depthOfTree(root.right))
         
+        self.maxDiameter = 0
+        def depthOfTree(root: Optional[TreeNode]) -> int:
+            if root is None:
+                return 0
+            
+            leftDepth = depthOfTree(root.left)
+            rightDepth = depthOfTree(root.right)
+            diameter = leftDepth + rightDepth
+            self.maxDiameter = max(self.maxDiameter, diameter)
+
+            return 1 + max(leftDepth, rightDepth)
+
+        depthOfTree(root)
+        return self.maxDiameter
