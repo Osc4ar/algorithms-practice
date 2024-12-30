@@ -11,7 +11,7 @@ class Solution:
         left = 0
         right = len(s1) - 1
 
-        s2_window = Counter(s2[left:right+1])
+        s2_window = s2[left:right+1]
         s2_frequencies = Counter(s2_window)
 
         while right < len(s2):
