@@ -1,21 +1,18 @@
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        memory = {}
-        def recursive(index: int) -> int:
-            if index >= len(nums):
-                return 0
+        if len(nums) == 1:
+            return nums[0]
 
-            if index in memory:
-                return memory[index]
-    
-            first = nums[index] + recursive(index + 2)
-            if index + 1 < len(nums):
-                second = nums[index + 1] + recursive(index + 3)
-            else:
-                second = 0
+        best = nums[:]
 
-            memory[index] = max(first, second)
+        for i in reversed(range(len(nums))):
+            option1 = 0
+            option2 = 0
+            if i + 2 < len(nums):
+                option1 = best[i+2]
+            if i + 3 < len(nums):
+                option2 = best[i+3]
 
-            return memory[index]
+            best[i] = nums[i] + max(option1, option2)
 
-        return recursive(0)
+        return max(best[0], best[1])
