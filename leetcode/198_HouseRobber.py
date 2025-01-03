@@ -1,21 +1,21 @@
 class Solution:
     def rob(self, nums: List[int]) -> int:
-        nonAdjancentMax = 0
-        adjancentMax = 0
+        memory = {}
+        def recursive(index: int) -> int:
+            if index >= len(nums):
+                return 0
 
-        for n in nums:
-            temp = adjancentMax
-            adjancentMax = max(nonAdjancentMax + n, adjancentMax)
-            nonAdjancentMax = temp
+            if index in memory:
+                return memory[index]
+    
+            first = nums[index] + recursive(index + 2)
+            if index + 1 < len(nums):
+                second = nums[index + 1] + recursive(index + 3)
+            else:
+                second = 0
 
-        return adjancentMax
+            memory[index] = max(first, second)
 
-'''
-[2, 4, 8, 9, 9, 3]
-[2, ], max(rob1+2, rob2) rob1 = 0, rob2 = 0
-[2, 4, ], max(rob1+4, rob2) rob1 = 0, rob2 = 2
-[2, 4, 8, ], max(rob1+8, rob2) rob1 = 2, rob2 = 4
-[2, 4, 8, 13, ], max(rob1+9, rob2) rob1 = 4, rob2 = 10
-[2, 4, 8, 13, 19, ], max(rob1+9, rob2) rob1 = 10, rob2 = 13
-[2, 4, 8, 13, 19, 19], max(rob1+3, rob2) rob1 = 13, rob2 = 19
-'''
+            return memory[index]
+
+        return recursive(0)
