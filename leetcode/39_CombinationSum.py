@@ -1,34 +1,20 @@
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        result = []
-        response = self.findSum([], candidates, target, result)
+        results = []
 
-        return result
+        def backtracking(index: int, current: List[int], total: int):
+            if total == target:
+                results.append(current.copy())
+                return
+            if index == len(candidates) or total > target:
+                return
 
-    def findSum(self, sum_path: List[int], candidates: List[int], target: int, result: List[List[int]]) -> bool:
-        if target == 0:
-            return True
-        if target < 0:
-            return False
+            candidate = candidates[index]
+            current.append(candidate)
+            backtracking(index, current, total + candidate)
+            current.pop()
 
-        for i, candidate in enumerate(candidates):
-            if candidate <= target: # 7
-                sum_path.append(candidate) # [2]
-                new_target = target - candidate # 5
+            backtracking(index + 1, current, total)
 
-                isValidSum = self.findSum(sum_path, candidates[i:], new_target, result)
-                if isValidSum:
-                    result.append(sum_path.copy())
-
-                sum_path.pop()
-
-        return False
-
-'''
-candidates = [2, 3, 6, 7], target = 7
-
-1. Append the ith candidate to the sum path
-2. Check if the ith candidate + the other candidates are True
-3. Pop the ith candidate if not
-4. Repeat that for each candidate
-'''
+        backtracking(0, [], 0)
+        return results
