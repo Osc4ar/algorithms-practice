@@ -1,11 +1,19 @@
 class Solution:
+    '''
+    Min heap of size k with the biggest values:
+               * 
+    [3,2,1,5,6,4]
+
+                   4
+                6     5
+    '''
     def findKthLargest(self, nums: List[int], k: int) -> int:
-        max_heap = [-num for num in nums]
-        heapq.heapify(max_heap)
+        heap = []
 
-        result = None
-        i = 0
-        for i in range(k):
-            result = heapq.heappop(max_heap)
+        for n in nums:
+            if len(heap) < k:
+                heapq.heappush(heap, n)
+            elif n > heap[0]:
+                heapq.heappushpop(heap, n)
 
-        return -result
+        return heap[0]
