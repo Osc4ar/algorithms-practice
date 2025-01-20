@@ -8,14 +8,12 @@ class Solution:
     def wallsAndGates(self, rooms: List[List[int]]) -> None:
         EMPTY = 2**31 - 1
         GATE = 0
-        OBSTACLE = -1
 
-        visited = set()
         ROWS = range(len(rooms))
         COLS = range(len(rooms[0]))
+        queue = deque()
 
-        def bfs(initial_row: int, initial_col: int):
-            queue = deque([(initial_row, initial_col)])
+        def bfs(queue):
             distance = 0
             while queue:
                 distance += 1
@@ -31,17 +29,10 @@ class Solution:
                             rooms[new_r][new_c] == EMPTY):
                             rooms[new_r][new_c] = distance
                             queue.append((new_r, new_c))
-                        elif (new_r in ROWS and
-                              new_c in COLS and
-                              rooms[new_r][new_c] != GATE and
-                              rooms[new_r][new_c] != EMPTY and
-                              rooms[new_r][new_c] != OBSTACLE and
-                              rooms[new_r][new_c] > distance):
-                              rooms[new_r][new_c] = distance
-                              queue.append((new_r, new_c))
 
         for r in ROWS:
             for c in COLS:
-                if rooms[r][c] == GATE and (r,c) not in visited:
-                    visited.add((r, c))
-                    bfs(r, c)
+                if rooms[r][c] == GATE:
+                    queue.append((r, c))
+
+        bfs(queue)
