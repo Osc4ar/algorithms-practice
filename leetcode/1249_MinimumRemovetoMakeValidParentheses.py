@@ -1,6 +1,6 @@
 class Solution:
     def minRemoveToMakeValid(self, s: str) -> str:
-        stack = []
+        count = 0
         result = []
 
         for i, c in enumerate(s):
@@ -8,14 +8,14 @@ class Solution:
                 result.append(c)
 
             if c == '(':
-                stack.append(c)
-            elif c == ')' and len(stack) > 0:
-                stack.pop()
+                count += 1
+            elif c == ')' and count > 0:
+                count -= 1
                 result.append(c)
 
         for i in reversed(range(len(result))):
-            if result[i] == '(' and len(stack) > 0:
-                stack.pop()
+            if result[i] == '(' and count > 0:
+                count -= 1
                 result.pop(i)
 
         return ''.join(result)
