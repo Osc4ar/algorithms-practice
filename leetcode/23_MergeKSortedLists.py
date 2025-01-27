@@ -25,8 +25,10 @@ class Solution:
             smallest_index = 0
             smallest_val = float('inf')
             non_empty = 0
+            to_remove = []
             for i, p in enumerate(pointers):
                 if p is None:
+                    to_remove.append(i)
                     continue
                 
                 non_empty += 1
@@ -54,5 +56,9 @@ class Solution:
 
             if head is None:
                 head = prev
+
+            for i in reversed(to_remove):
+                if i != 0:
+                    pointers.pop(i)
 
         return head
