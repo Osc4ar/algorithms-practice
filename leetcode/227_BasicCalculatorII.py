@@ -1,74 +1,61 @@
 class Solution:
     '''
-    We may use two lists to store numbers and operations:
-    Then we iterate the operators and execute all the '*' and '/' first
-    then we iterate with the results and calculate '+' and '-'
-
-    '3+2*2'
-    3, 2, 2
-    + *
-
-    3 4
-    +
-
-    7
-
-
-    '3+2*2+4'
-    3, 2, 2, 4
-    + * +
+    We can use a stack to save pending items to calculate.
+    1. If we have a digit, we add it to our current number
+    2. If we find an operator we will check which operator is, based on that we will:
+    3. If we have a * or /, we pop the previous value from the stack and do prev *operation* current, push the result onto the stack
+    4. If we have a + or -, we store the value on the stack, if we have a - we store the negative number
+    5. We will add every item on the stack when finished, therefore we can store negative numbers in case of substraction
     '''
     def calculate(self, s: str) -> int:
         digits = '0123456789'
         operators = '+-/*'
 
-        nums = []
-        ops = []
-
+        pending = []
         current = ''
+        prev_operator = '+'
         for c in s:
             if c in digits:
                 current += c
             elif c in operators:
-                nums.append(int(current))
+                num = int(current)
+
+                if prev_operator == '+':
+                    pending.append(num)
+                elif prev_operator == '-':
+                    pending.append(-1*num)
+                elif prev_operator == '*':
+                    prev = pending.pop()
+                    pending.append(prev * num)
+                elif prev_operator == '/':
+                    prev = pending.pop()
+                    if prev < 0:
+                        res = abs(prev) // num
+                        pending.append(-1 * res)
+                    else:
+                        pending.append(prev // num)
+                
+                prev_operator = c
                 current = ''
-                ops.append(c)
 
-        nums.append(int(current))
+        num = int(current)
+        if prev_operator == '+':
+            pending.append(num)
+        elif prev_operator == '-':
+            pending.append(-1*num)
+        elif prev_operator == '*':
+            prev = pending.pop()
+            pending.append(prev * num)
+        elif prev_operator == '/':
+            prev = pending.pop()
+            if prev < 0:
+                res = abs(prev) // num
+                pending.append(-1 * res)
+            else:
+                pending.append(prev // num)
 
-        # Higher priority * and /
-        ops_to_clear = []
-        removed = 0
-        for i in range(len(ops)):
-            nums_i = i - removed
-            if ops[i] == '*':
-                nums[nums_i] = nums[nums_i] * nums[nums_i+1]
-                nums.pop(nums_i+1)
-                removed += 1
-                ops_to_clear.append(i)
-            elif ops[i] == '/':
-                nums[nums_i] = nums[nums_i] // nums[nums_i+1]
-                nums.pop(nums_i+1)
-                removed += 1
-                ops_to_clear.append(i)
+        result = 0
+        for n in pending:
+            result += n
 
-        for i in reversed(ops_to_clear):
-            ops.pop(i)
-
-        # Lower priority + and -
-        ops_to_clear = []
-        removed = 0
-        for i in range(len(ops)):
-            nums_i = i - removed
-            if ops[i] == '+':
-                nums[nums_i] = nums[nums_i] + nums[nums_i+1]
-                nums.pop(nums_i+1)
-                removed += 1
-                ops_to_clear.append(i)
-            elif ops[i] == '-':
-                nums[nums_i] = nums[nums_i] - nums[nums_i+1]
-                nums.pop(nums_i+1)
-                removed += 1
-                ops_to_clear.append(i)
-
-        return nums[0]
+        return result
