@@ -15,22 +15,9 @@ class Solution:
             for _, website in sorted(websites):
                 websites_by_user[user].append(website)
 
-        tuples_by_user = defaultdict(set)
         tuples_by_score = Counter()
         for user, websites in websites_by_user.items():
             combs = set(combinations(websites, 3))
             tuples_by_score.update(combs)
 
-        max_tuples = []
-        max_score = float('-inf')
-        for t, score in tuples_by_score.items():
-            if score > max_score:
-                max_tuples = [t]
-                max_score = score
-            elif score == max_score:
-                max_tuples.append(t)
-
-        if len(max_tuples) > 1:
-            max_tuples.sort()
-            return max_tuples[0]
-        return max_tuples[0] 
+        return max(sorted(tuples_by_score), key=tuples_by_score.get)
