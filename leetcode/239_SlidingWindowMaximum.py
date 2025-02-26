@@ -1,38 +1,26 @@
 class Solution:
     '''
-    1. Create a sliding window of size k in the left
-    2. Keep a count of each value on the window and the max value using a max heap of the unique values
-    3. Every time we move a position to the right, remove the leftmost element from the count
-    4. If it is zero, remove it from the count and the max heap, keep removing values until we have one that exists on the count
-    5. Add the new value to the heap and the count
-    6. Save the max of every window
+    1. We can keep a sliding window of size k
+    2. Create a double-ended queue with the max of the window at the left.
+    3. Every time we need to insert a value it should be smaller than the right-most value, if it is not smaller than the right-most value: pop until the value is smaller or the queue is empty
+    4. When the index in the left-most position is out of the window, we pop it
+    5. For every valid window, save the max value in a result array 
     '''
     def maxSlidingWindow(self, nums: List[int], k: int) -> List[int]:
         result = []
-        count = defaultdict(int)
-        max_heap = []
-
-        for right in range(k):
-            n = nums[right]
-            if n not in count:
-                heapq.heappush(max_heap, -1*n)
-            count[n] += 1
-        result.append(-1*max_heap[0])
-
+        queue = deque()
         left = 0
-        for right in range(k, len(nums)):
-            old = nums[left]
-            if count[old] == 1:
-                count.pop(old)
-                while max_heap and -1*max_heap[0] not in count:
-                    heapq.heappop(max_heap)
-            else:
-                count[old] -= 1
-            left += 1
 
-            new = nums[right]
-            count[new] += 1
-            heapq.heappush(max_heap, -1*new)
-            result.append(-1*max_heap[0])
+        for right in range(len(nums)):
+            while queue and nums[queue[-1]] <= nums[right]:
+                queue.pop()
+            queue.append(right)
+
+            if queue[0] < left:
+                queue.popleft()
+
+            if right - left == k - 1:
+                result.append(nums[queue[0]])
+                left += 1
 
         return result
