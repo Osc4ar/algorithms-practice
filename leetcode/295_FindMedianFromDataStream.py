@@ -5,41 +5,43 @@ We could insert the numbers into an array using binary search O(log(n))
 class MedianFinder:
 
     def __init__(self):
-        self.data = []
+        self.half1 = [] # Max heap, smaller elements
+        self.half2 = [] # Min heap, greater elements
 
     def addNum(self, num: int) -> None:
-        if len(self.data) == 0:
-            self.data.append(num)
+        if len(self.half1) == 0:
+            heapq.heappush(self.half1, -1*num)
             return
 
-        index = 0
-        left = 0
-        right = len(self.data) - 1
-        while left <= right:
-            middle = (left + right) // 2
-            if num > self.data[middle]:
-                index = max(index, middle+1)
-                left = middle + 1
-            elif num < self.data[middle]:
-                right = middle - 1
+        if len(self.half2) == 0:
+            if num > -1*self.half1[0]:
+                heapq.heappush(self.half2, num)
             else:
-                index = max(index, middle)
-                break
-
-        if index == len(self.data):
-            self.data.append(num)
+                old_head = heapq.heappushpop(self.half1, -1*num)
+                heapq.heappush(self.half2, -1*old_head)
+            return
+        
+        if num > self.half2[0]:
+            heapq.heappush(self.half2, num)
         else:
-            self.data.insert(index, num)
+            heapq.heappush(self.half1, -1*num)
+
+        diff = len(self.half1) - len(self.half2)
+        if diff == 2:
+            old_head = heapq.heappop(self.half1)
+            heapq.heappush(self.half2, -1*old_head)
+        elif diff == -2:
+            old_head = heapq.heappop(self.half2)
+            heapq.heappush(self.half1, -1*old_head)
 
     def findMedian(self) -> float:
-        is_even = len(self.data) % 2 == 0
-        middle = len(self.data) // 2
-
-        if is_even:
-            median = (self.data[middle] + self.data[middle - 1]) / 2
-            return median
-
-        return self.data[middle]
+        if len(self.half1) > len(self.half2):
+            return -1*self.half1[0]
+        if len(self.half1) < len(self.half2):
+            return self.half2[0]
+        
+        median = (-1*self.half1[0] + self.half2[0]) / 2
+        return median
 
 
 # Your MedianFinder object will be instantiated and called as such:
