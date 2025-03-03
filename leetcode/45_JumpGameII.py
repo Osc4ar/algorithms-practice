@@ -1,32 +1,22 @@
 class Solution:
     '''
-    We can solve this problem using a BFS iteration of the array as follows:
-    1. Keep the elements we can reach on a queue, to avoid duplicates we can save the visited positions on a set
-    2. While we have not reached the last value, increase the number of jumps by one for each visited level
-    3. Pop elements of the current level, add to the queue the elements you can reach from that position
-    4. If an element has been already added to the queue, we can skip it to avoid duplicates
-    5. As soon as we reach the n-1 index, return the number of jumps
+    Instead of using a queue, we can keep the range we are visiting with a left and right pointers
+    1. The value we can visit at the beginning is zero
+    2. For every value in our window, we check the farthest we can reach
+    3. The new window will be from the value next to the original window to the farthest element we can reach
+    4. As soon as the window reaches the last element in our array, we finish the iteration
     '''
     def jump(self, nums: List[int]) -> int:
-        if len(nums) == 1:
-            return 0
-
-        queue = deque()
-        visited = set()
-
-        queue.append(0)
-        visited.add(0)
-
         jumps = 0
-        while queue:
+        left = 0
+        right = 0
+
+        while right < len(nums) - 1:
+            max_jump = 0
+            for i in range(left, right+1):
+                max_jump = max(max_jump, i + nums[i])
+            left = right + 1
+            right = max_jump
             jumps += 1
-            for _ in range(len(queue)):
-                i = queue.popleft()
-                for j in range(1, min(i+nums[i]+1, len(nums))):
-                    if j == len(nums) - 1:
-                        return jumps
-                    if j not in visited:
-                        queue.append(j)
-                        visited.add(j)
 
         return jumps
