@@ -1,30 +1,32 @@
 class Solution:
     '''
-    We can save the number of jumps needed to reach an element nums[i] on an array,
-    we will always keep the minimum number of jumps in the position i
-       *
-    [2,3,1,1,4]
-    [1,1,1,2,2]
-
-    1. Initialize the array with a size n full of infinites
-    2. While the last cell is equal to infite do the following:
-        1. For every next number between [i+1,i+j]
-        2. Check the sum to reach that next value by visiting the current cell: jumps[i]+1
-        3. Save in that cell the min between that value and the current value saved: min(jums[i]+1, jumps[i+j])
-    3. After finishing this, the result will be on the last cell
+    We can solve this problem using a BFS iteration of the array as follows:
+    1. Keep the elements we can reach on a queue, to avoid duplicates we can save the visited positions on a set
+    2. While we have not reached the last value, increase the number of jumps by one for each visited level
+    3. Pop elements of the current level, add to the queue the elements you can reach from that position
+    4. If an element has been already added to the queue, we can skip it to avoid duplicates
+    5. As soon as we reach the n-1 index, return the number of jumps
     '''
     def jump(self, nums: List[int]) -> int:
-        dp = [float('inf')] * len(nums)
-        dp[0] = 0
+        if len(nums) == 1:
+            return 0
 
-        i = 0
-        while dp[-1] == float('inf') and i < len(nums):
-            for j in range(1, nums[i]+1):
-                if i+j == len(nums):
-                    break
+        queue = deque()
+        visited = set()
 
-                current = dp[i] + 1
-                dp[i+j] = min(dp[i+j], current)
-            i += 1
+        queue.append(0)
+        visited.add(0)
 
-        return dp[-1]
+        jumps = 0
+        while queue:
+            jumps += 1
+            for _ in range(len(queue)):
+                i = queue.popleft()
+                for j in range(1, min(i+nums[i]+1, len(nums))):
+                    if j == len(nums) - 1:
+                        return jumps
+                    if j not in visited:
+                        queue.append(j)
+                        visited.add(j)
+
+        return jumps
