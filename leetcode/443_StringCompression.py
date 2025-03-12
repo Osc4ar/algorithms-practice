@@ -17,15 +17,14 @@ class Solution:
         current = chars[0]
         initial = 0
         count = 1
-        count_size = 1
         for i in range(1, len(chars)):
             if chars[i] == current:
                 count += 1
-                count_size = len(f'{count}')
                 chars[i] = ''
             else:
                 if count > 1:
                     initial += 1
+                    count_size = len(f'{count}')
                     for j in range(count_size):
                         base10 = 10**(count_size-1-j)
                         chars[initial+j] = f'{count // base10}'
@@ -33,11 +32,10 @@ class Solution:
                 current = chars[i]
                 initial = i
                 count = 1
-                count_size = len(f'{count}')
-
         
         if count > 1:
             initial += 1
+            count_size = len(f'{count}')
             for j in range(count_size):
                 base10 = 10**(count_size-1-j)
                 chars[initial+j] = f'{count // base10}'
