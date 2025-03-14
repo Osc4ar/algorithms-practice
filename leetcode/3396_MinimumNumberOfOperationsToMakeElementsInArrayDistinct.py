@@ -1,27 +1,17 @@
 class Solution:
     '''
-    1. Count the frequencies of each number on the array
-    2. If all frequencies are one, return 0
-    3. Initialize a count in zero
-    4. Iterate the first three nums, remove them from the count and check if all frequencies are one or zero
-    5. Repeate until the array is empty or all frequencies are equal or less than one
+    1. Find the first duplicate from right to left, that will be the last element to remove
+    2. The index of that element, divided by 3 is the number of removals we have to do to have a distinct array
+    3. We have to round up the division because we have to remove the duplicate completely
     '''
     def minimumOperations(self, nums: List[int]) -> int:
-        freqs = Counter(nums)
+        freqs = defaultdict(int)
 
-        count = 0
         index = 0
-        while not self.distinct(freqs):
-            for i in range(index, min(index+3, len(nums))):
-                freqs[nums[i]] -= 1
-            index += 3
-            count += 1
+        for i in reversed(range(len(nums))):
+            if freqs[nums[i]] == 1:
+                index = i + 1
+                break
+            freqs[nums[i]] += 1
 
-        return count
-
-
-    def distinct(self, freqs) -> bool:
-        for val, count in freqs.items():
-            if count > 1:
-                return False
-        return True
+        return math.ceil(index / 3)
