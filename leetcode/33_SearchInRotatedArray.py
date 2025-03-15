@@ -1,37 +1,49 @@
 class Solution:
+    '''
+    target = 5
+     L     *     R
+    [7,0,1,2,4,5,6]
+
+
+    target = 0
+     L     *     R
+    [6,7,0,1,2,4,5]
+
+    target = 0
+     L     *     R
+    [4,5,6,7,0,1,2]
+
+    If L < R, use regular binary search:
+        If middle is smaller than the target, move to right
+        If middle is greater than the target, move to left
+    Else:
+        pass
+    '''
     def search(self, nums: List[int], target: int) -> int:
-        left = 0
-        right = len(nums) - 1
+        L = 0
+        R = len(nums) - 1
 
-        while left <= right:
-            if nums[left] < nums[right]:
-                return self.binary_search(nums, target, left, right)
-            
-            middle = (right + left) // 2
-            if target == nums[middle]:
-                return middle
-            if target == nums[left]:
-                return left
-            if target == nums[right]:
-                return right
-
-            if target > nums[middle] and (target < nums[right] or nums[middle] > nums[right]):
-                left = middle + 1
-            elif target < nums[left] and nums[left] < nums[middle]:
-                left = middle + 1
+        while L <= R:
+            mid = (L + R) // 2
+            if nums[L] < nums[R]:
+                if nums[mid] < target:
+                    L = mid + 1
+                elif nums[mid] > target:
+                    R = mid - 1
+                else:
+                    return mid
             else:
-                right = middle - 1
+                if nums[mid] < target:
+                    if nums[mid] > nums[L] or nums[L] > target:
+                        L = mid + 1
+                    else:
+                        R = mid - 1
+                elif nums[mid] > target:
+                    if nums[mid] < nums[R] or nums[R] < target:
+                        R = mid - 1
+                    else:
+                        L = mid + 1
+                else:
+                    return mid
 
-        return -1
-
-    def binary_search(self, nums: List[int], target: int, left: int, right: int) -> int:
-        while left <= right:
-            middle = (right + left) // 2
-            if target > nums[middle]:
-                left = middle + 1
-            elif target < nums[middle]:
-                right = middle - 1
-            else:
-                return middle
-        
         return -1
