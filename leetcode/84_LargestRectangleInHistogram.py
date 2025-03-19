@@ -13,19 +13,18 @@ class Solution:
         stack = []
         result = 0
 
-        for i in range(len(heights)):
+        for i, height in enumerate(heights):
             index = i
-            while stack and stack[-1][0] > heights[i]:
+            while stack and stack[-1][0] > height:
                 max_height, index = stack.pop()
                 area = max_height * (i - index)
                 result = max(result, area)
 
-            stack.append((heights[i], index))
+            stack.append((height, index))
         
 
-        while stack:
-            max_height, index = stack.pop()
-            area = max_height * (len(heights) - index)
+        for height, start in stack:
+            area = height * (len(heights) - start)
             result = max(result, area)
 
         return result
