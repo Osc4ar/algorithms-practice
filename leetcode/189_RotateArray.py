@@ -1,32 +1,32 @@
 class Solution:
     def rotate(self, nums: List[int], k: int) -> None:
         """
-        1. Mark the last k elements with a placeholder to be removed
-        2. Save the last k elements in a separate array
-        3. Move the remaining elements from their original position to fill the placeholders
-        4. Copy the last k elements to the beginning of the array
-        5. We can reduce k to be the module of the array size, we do not need to shift multiple times
+        1. Reverse the whole array, in this way we will have the numbers on the portion of the array we want
+        2. Reverse the first k elements of the reversed array
+        3. Reverse the rest of the array elements
         """
         real_k = k % len(nums)
 
-        if real_k == 0:
-            return
-
-        # Save the last k elements
-        queue = deque()
-        for i in range(len(nums)-real_k, len(nums)):
-            queue.append(nums[i])
-        
-        # Shift the elements in the array to the end
-        left = len(nums) - 1 - real_k
+        # Whole array
+        left = 0
         right = len(nums) - 1
-        while left >= 0:
-            nums[right] = nums[left]
-            left -= 1
-            right -= 1
+        self.reverse_in_place(nums, left, right)
 
-        # Copy saved elements to beginning of array
-        i = 0
-        while queue:
-            nums[i] = queue.popleft()
-            i += 1 
+        # First k elements
+        left = 0
+        right = real_k - 1
+        self.reverse_in_place(nums, left, right)
+
+        # Rest of the array
+        left = real_k
+        right = len(nums) - 1
+        self.reverse_in_place(nums, left, right)
+
+    def reverse_in_place(self, nums, left, right):
+        while left < right:
+            tmp = nums[left]
+            nums[left] = nums[right]
+            nums[right] = tmp
+
+            right -= 1
+            left += 1
