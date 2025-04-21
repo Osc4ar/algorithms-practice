@@ -5,27 +5,27 @@
 #         self.left = left
 #         self.right = right
 class Solution:
+    '''
+    Use BFS in the tree, add to the result the last value visited in each level
+    '''
     def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
-        right_side_view = []
-        next_nodes = []
-        level = 0
+        if root is None:
+            return []
 
-        if root:
-            next_nodes.append(root)
+        queue = deque()
+        queue.append(root)
+        result = []
 
-        while len(next_nodes) > 0:
-            for nodes_to_visit in range(len(next_nodes)):
-                node = next_nodes.pop(0)
-
-                # We only add the first element visited per level
-                if len(right_side_view) == level:
-                    right_side_view.append(node.val)
-
-                if node.right:
-                    next_nodes.append(node.right)
+        while queue:
+            last_value = None
+            for _ in range(len(queue)):
+                node = queue.popleft()
+                last_value = node.val
                 if node.left:
-                    next_nodes.append(node.left)
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            
+            result.append(last_value)
 
-            level += 1
-
-        return right_side_view
+        return result
