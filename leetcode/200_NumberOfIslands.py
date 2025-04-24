@@ -1,38 +1,38 @@
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        visited = set()
+        LAND = '1'
+        WATER = '0'
+        ROWS = range(len(grid))
+        COLS = range(len(grid[0]))
+
         count = 0
+        visited = set()
 
-        for row in range(len(grid)):
-            for column in range(len(grid[0])):
-                node = (row, column)
-                if (node not in visited and
-                    grid[row][column] == "1"):
-                    self.mapIsland(row, column, grid, visited)
+        def bfs(start_row: int, start_col: int):
+            queue = deque()
+            queue.append((start_row, start_col))
+            visited.add((start_row, start_col))
 
+            while queue:
+                for _ in range(len(queue)):
+                    row, col = queue.popleft()
+
+                    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+                    for x, y in directions:
+                        new_row = row + x
+                        new_col = col + y
+                        if (new_row in ROWS and
+                            new_col in COLS and
+                            grid[new_row][new_col] == LAND and
+                            (new_row, new_col) not in visited):
+                            queue.append((new_row, new_col))
+                            visited.add((new_row, new_col))
+
+        for i in ROWS:
+            for j in COLS:
+                if grid[i][j] == LAND and (i,j) not in visited:
                     count += 1
-
-                visited.add(node)
+                    bfs(i, j)
 
         return count
-
-
-    def mapIsland(self, row: int, column: int, grid: List[List[str]], visited: set[(int, int)]):
-        next_nodes = deque()
-        next_nodes.append((row, column))
-
-        while len(next_nodes) > 0:
-            current_row, current_column = next_nodes.popleft()
-            next_directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
-
-            for direction in next_directions:
-                new_row = current_row + direction[0]
-                new_column = current_column + direction[1]
-                new_node = (new_row, new_column)
-
-                if (new_row in range(len(grid)) and
-                    new_column in range(len(grid[0])) and
-                    new_node not in visited and
-                    grid[new_row][new_column] == "1"):
-                    visited.add(new_node)
-                    next_nodes.append(new_node)
