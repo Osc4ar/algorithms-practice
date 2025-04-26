@@ -1,31 +1,35 @@
 class Solution:
+    '''
+    1. Build adjacency list of the course and its dependencies
+    2. Iterate all courses from 0 to numCourses - 1
+    3. For every course, using DFS check if we can complete the course, by following all prerequisites
+    4. A course is possible to complete if it does not have a prerequesite or there is no cycle on it
+    '''
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        adjacency = defaultdict(list)
-        for course, prereq in prerequisites:
-            adjacency[course].append(prereq)
+        adj = defaultdict(list)
+        completed = set()
 
-        def dfs(course: int, taken: set) -> bool:
-            if course in taken:
+        for course, prereq in prerequisites:
+            adj[course].append(prereq)
+
+        def dfs(course: int, path: set):
+            if course in completed:
+                return True
+
+            if course in path:
                 return False
 
-            prereqs = adjacency[course]
-            if len(prereqs) == 0:
-                return True
-            
-            taken.add(course)
-            for prereq in prereqs:
-                if prereq in taken:
+            path.add(course)
+            for prereq in adj[course]:
+                if not dfs(prereq, path):
                     return False
 
-                if not dfs(prereq, taken):
-                    return False
-            taken.remove(course)
-
-            adjacency[course] = []
+            path.remove(course)
+            completed.add(course)
             return True
 
-        for course in range(numCourses):
-            if not dfs(course, set()):
+        for i in range(numCourses):
+            if not dfs(i, set()):
                 return False
 
         return True
