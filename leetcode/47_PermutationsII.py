@@ -1,23 +1,30 @@
 class Solution:
+    '''
+    Generate the permutation using Backtracking as follows:
+    1. Iterate nums, we have the option to either take the number or skip it
+    2. If we take it, we have to call the recursive function with all nums except the one we took
+    3. To avoid duplicates, before saving the permutation we check if it is already on the results, if not we add it
+    4. To avoid repeated work, if we already added a number to the current permutation, we do not need to repeat that permutation group
+    '''
     def permuteUnique(self, nums: List[int]) -> List[List[int]]:
-        results = set()
+        result = set()
 
-        def recursion(nums: List[int], perm: List[int], results: set):
+        def backtracking(nums: List[int], current: List[int]):
             if len(nums) == 0:
-                t = tuple(perm)
-                if t not in results:
-                    results.add(t)
+                t = tuple(current)
+                if t not in result:
+                    result.add(t)
                 return
-            
+
             visited = set()
             for i in range(len(nums)):
                 if nums[i] not in visited:
                     visited.add(nums[i])
                     new_nums = nums[:i] + nums[i+1:]
-                    perm.append(nums[i])
-                    recursion(new_nums, perm, results)
-                    perm.pop()
+                    current.append(nums[i])
+                    backtracking(new_nums, current)
+                    current.pop()
 
-        recursion(nums, [], results)
+        backtracking(nums, [])
 
-        return [list(perm) for perm in results]
+        return [list(perm) for perm in result]
