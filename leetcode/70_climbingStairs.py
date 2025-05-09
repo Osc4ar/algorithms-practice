@@ -1,18 +1,14 @@
 class Solution:
-    '''
-    c(n) = c(n-1) + c(n-2)
-    '''
     def climbStairs(self, n: int) -> int:
-        if n == 1:
-            return 1
-        if n == 2:
-            return 2
+        if n == 1 or n == 2:
+            return n
 
-        prev = 2
-        before_prev = 1
+        second_to_last = 1
+        last = 2
+        result = 0
         for i in range(2, n):
-            tmp = prev
-            prev += before_prev
-            before_prev = tmp
+            result = last + second_to_last
+            second_to_last = last
+            last = result
 
-        return prev
+        return result
